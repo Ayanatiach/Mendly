@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # mendly
 
 A new Flutter project.
@@ -15,3 +16,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# Mendly
+The all-in-one university utility app for BML Munjal University. Features 10-minute maintenance dispatching, secure mess hall access, and shuttle booking.
+>>>>>>> d990342101c100594ebbf97534cb09a027699060
