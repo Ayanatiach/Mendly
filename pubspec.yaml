@@ -1,0 +1,25 @@
+name: mendly
+description: "Mendly - Rapid Campus Infrastructure Repair & Incentive System"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  # Requires modern Dart SDK with null-safety enabled
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State management for reactive UI updates across screens
+  provider: ^6.1.2
+  # Date formatting for countdown timers and timestamp displays
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  # Enables Material 3 design system components
+  uses-material-design: true
