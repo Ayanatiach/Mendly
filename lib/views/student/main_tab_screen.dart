@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'student_dashboard.dart'; // Repairs screen
 import 'mess_screen.dart'; // New mess screen
 import 'shuttle_screen.dart'; // New shuttle screen
 
@@ -15,7 +16,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
 
   // The three core feature screens for the campus super-app
   final List<Widget> _screens = const [
-    MainTabScreen(),
+    StudentDashboard(),
     MessScreen(),
     ShuttleScreen(),
   ];
