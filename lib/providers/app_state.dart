@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../models/ticket_model.dart';
@@ -7,20 +6,9 @@ import '../models/ticket_model.dart';
 class AppState extends ChangeNotifier {
   UserModel? _currentUser;
   final List<TicketModel> _tickets = [];
-  Timer? _ticker;
 
   AppState() {
     _populateInitialMockData();
-    // Run a periodic timer every second to keep countdown timers live in the UI
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      notifyListeners();
-    });
-  }
-
-  @override
-  void dispose() {
-    _ticker?.cancel();
-    super.dispose();
   }
 
   // --- Getters ---

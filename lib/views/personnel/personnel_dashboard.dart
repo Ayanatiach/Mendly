@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
@@ -6,50 +7,83 @@ import 'resolve_ticket_screen.dart';
 import 'personnel_wallet_screen.dart';
 import '../auth_screen.dart';
 
-/// Maintenance Personnel Hub showing live tickets with active 10-minute timers
-class PersonnelDashboard extends StatelessWidget {
+/// Maintenance Personnel Hub showing live tickets with active 10-minute timers.
+///
+/// Uses a StatefulWidget with a Timer.periodic to drive the live SLA countdown.
+/// This is critical on Flutter Web: reading DateTime.now() directly inside a
+/// build() method that is also subscribed to a Provider will cause an infinite
+/// rebuild loop (stack overflow). The timer gates clock updates behind setState,
+/// completely decoupling the live clock tick from the Provider rebuild cycle.
+class PersonnelDashboard extends StatefulWidget {
   const PersonnelDashboard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
-    final tickets = appState.openPersonnelTickets;
+  State<PersonnelDashboard> createState() => _PersonnelDashboardState();
+}
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        title: const Text('Urgent Dispatch Queue', style: TextStyle(color: Colors.white, fontSize: 16)),
-        actions: [
-          // Wallet and Bonus Navigation Button
-          IconButton(
-            tooltip: 'Earnings & Bonus Wallet',
-            icon: const Icon(Icons.account_balance_wallet_outlined, color: Color(0xFF10B981)),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonnelWalletScreen()));
-            },
-          ),
-          IconButton(
-            tooltip: 'Logout',
-            icon: const Icon(Icons.logout, color: Color(0xFF94A3B8)),
-            onPressed: () {
-              appState.logout();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
-            },
-          )
-        ],
-      ),
-      body: tickets.isEmpty
-          ? const Center(child: Text('No pending tickets in queue! Great job.', style: TextStyle(color: Color(0xFF94A3B8))))
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: tickets.length,
-              itemBuilder: (context, index) {
-                final ticket = tickets[index];
-                return _buildDispatchCard(context, appState, ticket);
+class _PersonnelDashboardState extends State<PersonnelDashboard> {
+  // Ticks every second to refresh the live SLA countdown display.
+  // This is the ONLY thing that should be driving the clock — NOT build().
+  late final Timer _clockTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      // Only rebuild if the widget is still mounted to avoid leaks.
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _clockTimer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Use Consumer so that Provider rebuilds are handled correctly without
+    // causing a new Provider.of subscription on every single frame tick.
+    return Consumer<AppState>(builder: (context, appState, _) {
+      final tickets = appState.openPersonnelTickets;
+
+      return Scaffold(
+        backgroundColor: const Color(0xFF0F172A),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF1E293B),
+          title: const Text('Urgent Dispatch Queue', style: TextStyle(color: Colors.white, fontSize: 16)),
+          actions: [
+            // Wallet and Bonus Navigation Button
+            IconButton(
+              tooltip: 'Earnings & Bonus Wallet',
+              icon: const Icon(Icons.account_balance_wallet_outlined, color: Color(0xFF10B981)),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonnelWalletScreen()));
               },
             ),
-    );
+            IconButton(
+              tooltip: 'Logout',
+              icon: const Icon(Icons.logout, color: Color(0xFF94A3B8)),
+              onPressed: () {
+                appState.logout();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+              },
+            )
+          ],
+        ),
+        body: tickets.isEmpty
+            ? const Center(child: Text('No pending tickets in queue! Great job.', style: TextStyle(color: Color(0xFF94A3B8))))
+            : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: tickets.length,
+                itemBuilder: (context, index) {
+                  final ticket = tickets[index];
+                  return _buildDispatchCard(context, appState, ticket);
+                },
+              ),
+      );
+    });
   }
 
   Widget _buildDispatchCard(BuildContext context, AppState appState, TicketModel ticket) {
