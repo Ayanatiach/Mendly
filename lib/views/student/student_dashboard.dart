@@ -21,8 +21,10 @@ class StudentDashboard extends StatelessWidget {
     final cardBorder = isDark
         ? const Color(0xFFF2F0E6).withValues(alpha: 0.15)
         : const Color(0xFF1A0D08).withValues(alpha: 0.08);
-    final textPrimary = isDark ? const Color(0xFFF2F0E6) : const Color(0xFF1A0D08);
-    final textMuted = isDark ? const Color(0xFFE7BCBA) : const Color(0xFF703248);
+    final textPrimary =
+        isDark ? const Color(0xFFF2F0E6) : const Color(0xFF1A0D08);
+    final textMuted =
+        isDark ? const Color(0xFFE7BCBA) : const Color(0xFF703248);
     final appBarBg = isDark ? const Color(0xFF1A0D08) : const Color(0xFFF2F0E6);
     const racingRed = Color(0xFFD90429);
 
@@ -38,8 +40,7 @@ class StudentDashboard extends StatelessWidget {
         ),
         title: Row(
           children: [
-            const Icon(Icons.home_repair_service_rounded,
-                color: racingRed),
+            const Icon(Icons.home_repair_service_rounded, color: racingRed),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -237,12 +238,12 @@ class StudentDashboard extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.location_on_outlined,
-                      size: 14, color: textMuted),
+                  Icon(Icons.location_on_outlined, size: 14, color: textMuted),
                   const SizedBox(width: 4),
                   Text('${ticket.building} • ${ticket.room}',
                       style: TextStyle(
-                          color: textMuted.withValues(alpha: 0.8), fontSize: 12)),
+                          color: textMuted.withValues(alpha: 0.8),
+                          fontSize: 12)),
                   const Spacer(),
                   Icon(Icons.chevron_right_rounded,
                       color: textMuted.withValues(alpha: 0.6)),
