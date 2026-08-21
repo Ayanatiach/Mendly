@@ -1,0 +1,183 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Edit Profile - Mendly</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#926e6c",
+                        "tertiary": "#78435c",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#e7bcba",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#fcf9ef",
+                        "surface-tint": "#bf0022",
+                        "on-primary-fixed-variant": "#930018",
+                        "tertiary-container": "#935b75",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffe9f0",
+                        "surface-container-low": "#f6f4ea",
+                        "on-secondary-container": "#7a5745",
+                        "inverse-primary": "#ffb3af",
+                        "on-primary-fixed": "#410005",
+                        "on-tertiary-fixed": "#350b22",
+                        "on-tertiary-fixed-variant": "#69374f",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffd8e7",
+                        "surface-container-highest": "#e4e3d9",
+                        "primary-fixed": "#ffdad7",
+                        "on-primary-container": "#ffeae8",
+                        "inverse-surface": "#30312a",
+                        "secondary-fixed": "#ffdbca",
+                        "surface-container-high": "#eae8de",
+                        "primary-fixed-dim": "#ffb3af",
+                        "racing-red": "#D90429",
+                        "coffee-beans": "#4B2E1E",
+                        "on-surface-variant": "#5d3f3d",
+                        "tertiary-fixed-dim": "#f7b3d0",
+                        "primary-container": "#d90429",
+                        "black-cherry": "#31081F",
+                        "on-secondary-fixed-variant": "#5f3f2e",
+                        "surface-dim": "#dcdad0",
+                        "surface-bright": "#fcf9ef",
+                        "on-secondary-fixed": "#2d1507",
+                        "alabaster-grey": "#F2F0E6",
+                        "on-surface": "#1b1c16",
+                        "surface-variant": "#e4e3d9",
+                        "surface-container": "#f0eee4",
+                        "secondary-container": "#ffd0b9",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#eabda6",
+                        "background": "#fcf9ef",
+                        "secondary": "#795744",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-background": "#1b1c16",
+                        "inverse-on-surface": "#f3f1e7",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#ac001e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "button": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "body-lg": ["17px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "button": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "body-md": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["34px", { "lineHeight": "41px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="text-on-background font-body-md antialiased pt-[44px] pb-[80px] bg-surface-container-lowest">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-surface-variant flex items-center justify-between px-margin-mobile h-[44px] bg-surface-container-lowest/80">
+<button class="text-secondary dark:text-secondary-fixed hover:opacity-70 transition-opacity active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back_ios">arrow_back_ios</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-secondary absolute left-1/2 -translate-x-1/2">Edit Profile</h1>
+<button class="text-primary font-button hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+            Save
+        </button>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-margin-mobile pt-lg max-w-lg mx-auto">
+<!-- Profile Picture Section -->
+<div class="flex flex-col items-center justify-center mb-xl">
+<div class="relative w-24 h-24 mb-sm">
+<img class="w-full h-full rounded-full object-cover shadow-[0_8px_24px_rgba(75,46,30,0.1)] border-2 border-surface" data-alt="A premium, studio-quality portrait of a college student in a brightly lit modern academic setting. The student is smiling warmly, dressed in smart casual attire. The background is slightly blurred featuring clean architectural lines and natural daylight. The image has a light, optimistic mood, perfect for a professional academic profile, utilizing subtle warm tones that complement the overall light mode corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBme5Ln9bHnwaP4tZgfdfGyM2ZyR2t85DU0_QnyjI660pi478ykTX44PntnIkZ_gHkZZWCi5Y3UteP1wezul27ERYgaAuI1nC2IfbZegg038q58kyYUDHu8d0bbD5bo0Su4Fq4hhCJH3xYjIy_Ej-ix3sB-uaQE9PlAJoUSOgBiDYDyucY6ZxKHWWABI0JXNy0sF_xh_8-tKY8Zsye003pXlN69VUIdbMq4_CiA56irYMPspn5Fsqux">
+<button class="absolute bottom-0 right-0 bg-surface-container-highest rounded-full w-8 h-8 flex items-center justify-center shadow-md border border-surface active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant" data-icon="photo_camera">photo_camera</span>
+</button>
+</div>
+<button class="font-button text-button text-primary hover:opacity-70 transition-opacity">Edit Picture</button>
+</div>
+<!-- Input Fields - Inward Inset List Style -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_rgba(75,46,30,0.05)] border border-surface-variant overflow-hidden mb-xl"><!-- Full Name -->
+<div class="relative px-md py-sm border-b border-surface-variant ml-md pl-0 flex flex-col justify-center min-h-[60px]">
+    <label class="font-body-sm text-body-sm text-on-surface-variant mb-xs" for="fullName">Full Name</label>
+    <input class="w-full bg-transparent border-none p-0 m-0 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:outline-none" id="fullName" type="text" value="Sarah Jenkins">
+</div>
+<!-- University ID -->
+<div class="relative px-md py-sm border-b border-surface-variant ml-md pl-0 flex flex-col justify-center min-h-[60px]">
+    <label class="font-body-sm text-body-sm text-on-surface-variant mb-xs" for="uniId">University ID</label>
+    <input class="w-full bg-transparent border-none p-0 m-0 font-body-lg text-body-lg text-on-surface-variant focus:ring-0 focus:outline-none" id="uniId" readonly="" type="text" value="U8923412">
+    <span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="lock">lock</span>
+</div>
+<!-- Email Address -->
+<div class="relative px-md py-sm border-b border-surface-variant ml-md pl-0 flex flex-col justify-center min-h-[60px]">
+    <label class="font-body-sm text-body-sm text-on-surface-variant mb-xs" for="email">Email Address</label>
+    <input class="w-full bg-transparent border-none p-0 m-0 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:outline-none" id="email" type="email" value="s.jenkins@university.edu">
+</div>
+<!-- Phone Number -->
+<div class="relative px-md py-sm ml-md pl-0 flex flex-col justify-center min-h-[60px]">
+    <label class="font-body-sm text-body-sm text-on-surface-variant mb-xs" for="phone">Phone Number</label>
+    <input class="w-full bg-transparent border-none p-0 m-0 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:outline-none" id="phone" type="tel" value="(555) 123-4567">
+</div></section>
+<!-- Actions -->
+<section class="flex flex-col gap-md">
+<button class="w-full h-[50px] bg-alabaster-grey rounded-lg border border-coffee-beans/10 font-button text-button text-racing-red flex items-center justify-center hover:opacity-80 active:scale-[0.98] transition-all">
+                Change Password
+            </button>
+<button class="w-full h-[50px] bg-alabaster-grey rounded-lg border border-coffee-beans/10 font-button text-button flex items-center justify-center hover:opacity-80 active:scale-[0.98] transition-all text-racing-red mb-xl">
+                Sign Out
+            </button>
+</section>
+</main>
+<!-- Navigation suppressed for linear/focused "Edit Profile" task -->
+
+
+</body></html>

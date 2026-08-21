@@ -1,0 +1,323 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Mendly - Approvals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#703248",
+                        "tertiary-container": "#410005",
+                        "surface-bright": "#f9f9f9",
+                        "inverse-primary": "#ffb1c8",
+                        "on-primary-fixed": "#3a061d",
+                        "outline-variant": "#d6c1c6",
+                        "tertiary-fixed-dim": "#ffb3af",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#410005",
+                        "surface-tint": "#8c4960",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "surface-container-low": "#f3f3f3",
+                        "primary": "#000000",
+                        "on-tertiary-container": "#fc2d3d",
+                        "on-secondary-fixed": "#1b1c16",
+                        "secondary-fixed": "#e4e3d9",
+                        "tertiary": "#000000",
+                        "surface": "#f9f9f9",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-variant": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#474740",
+                        "on-surface-variant": "#524347",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "on-background": "#1a1c1c",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#c8c7bd",
+                        "outline": "#847377",
+                        "on-secondary-container": "#65655d",
+                        "secondary-container": "#e4e3d9",
+                        "tertiary-fixed": "#ffdad7",
+                        "primary-container": "#3a061d",
+                        "on-primary-container": "#b86e86",
+                        "primary-fixed": "#ffd9e2",
+                        "surface-container-high": "#e8e8e8",
+                        "primary-fixed-dim": "#ffb1c8",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#930018",
+                        "background": "#f9f9f9",
+                        "secondary": "#5e5f57",
+                        "surface-container": "#eeeeee",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dadada",
+                        // M3 Emulated specific colors based on prompt
+                        "alabaster-grey": "#F2F2F2",
+                        "coffee-bean": "#1B1C16",
+                        "black-cherry": "#3a061d",
+                        "emerald-green": "#10B981", // Using standard tailwind emerald-500 as proxy
+                        "racing-red": "#EF4444" // Using standard tailwind red-500 as proxy
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "md": "16px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "margin-desktop": "32px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "safe": "env(safe-area-inset-bottom)"
+                    },
+                    "fontFamily": {
+                        "title-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif; /* Fallback to Inter as specified in config, though prompt asked for Helvetica Neue, config dictates Inter */
+            -webkit-font-smoothing: antialiased;
+            background-color: theme('colors.surface');
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 10px;
+        }
+        
+        /* Safe area padding for iOS */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col pt-safe pb-safe selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar from JSON -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline shadow-sm flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full pt-safe">
+<div class="flex items-center gap-md">
+<img alt="Warden Profile Icon" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="A professional headshot of a college warden in modern corporate attire. Lighting is soft and bright, background is a subtle grey gradient. Minimalist and authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqmTjNFkQkVpmCCCvY9NRPcExkWr9BRr-o41UJL805sv6MKv3cAp8ohy7eP-HveNMzccT2qKOxxkpsQOZS2_FLj9KCng6KYSuQYzdHo1t7GyrOhik80R-lpYBkwNDnGrzjGcUilbxS7WxTNZidAN-cBtrX1whU5dEgyVZ5WPkw5aGkxzyQud37K-Ygiqw-UsryIcK0W6xKAOjc-iqSZ-Q9L7D0l0_9If3KpZcEGuNfGJbYZoCgTLHJ">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed-dim tracking-tight" style="color: rgb(189, 0, 0);">Mendly</h1>
+</div>
+<div class="flex items-center">
+<button class="p-2 rounded-full text-primary dark:text-primary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-100">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 0;">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 mt-16 mb-20 md:mb-0 px-margin-mobile md:px-margin-desktop py-lg max-w-container-max mx-auto w-full md:ml-72 transition-all duration-300">
+<!-- Page Header -->
+<div class="mb-lg">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">Approvals</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Review and manage student requests.</p>
+</div>
+<!-- Segmented Control (Tabs) -->
+<div class="bg-surface-container-low rounded-lg p-1 flex mb-lg shadow-sm border border-outline-variant max-w-md mx-auto md:mx-0">
+<button aria-selected="true" class="flex-1 py-2 text-center rounded-md font-title-md text-title-md transition-all duration-200 bg-surface shadow-sm text-primary">
+                Pending
+            </button>
+<button aria-selected="false" class="flex-1 py-2 text-center rounded-md font-title-md text-title-md transition-all duration-200 text-on-surface-variant hover:bg-surface-variant">
+                History
+            </button>
+</div>
+<!-- Scrollable List of Requests -->
+<div class="space-y-md">
+<!-- List Item: Night Out Pass -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-outline-variant hover:shadow-md transition-shadow duration-200 relative overflow-hidden group">
+<!-- Status Bar Indicator -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-tint"></div>
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-md ml-xs">
+<!-- Student Info & Details -->
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-[#ffdad6] text-[#93000a] font-label-sm text-label-sm px-2 py-1 rounded-full uppercase tracking-wider">Night Out Pass</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Today, 20:00 - 23:30</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface font-semibold">Sarah Jenkins</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">ID: ST-2023-4012</p>
+<div class="bg-surface-container-low p-sm rounded-md border border-outline-variant/50">
+<p class="font-body-md text-body-md text-on-surface"><span class="font-medium text-on-surface-variant">Reason:</span> Attending a family dinner in the city center.</p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-sm mt-md md:mt-0 self-end md:self-auto">
+<button class="flex items-center justify-center w-12 h-12 rounded-full border border-error text-error hover:bg-error-container transition-colors duration-200 active:scale-95" title="Deny">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-[#10B981] text-white hover:bg-opacity-90 shadow-md transition-colors duration-200 active:scale-95" title="Approve">
+<span class="material-symbols-outlined text-2xl">check</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List Item: Medical Leave -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-outline-variant hover:shadow-md transition-shadow duration-200 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#10B981]"></div>
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-md ml-xs">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-[#d1fae5] text-[#065f46] font-label-sm text-label-sm px-2 py-1 rounded-full uppercase tracking-wider">Medical Leave</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Oct 12 - Oct 14 (3 days)</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface font-semibold">David Chen</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">ID: ST-2022-1844</p>
+<div class="bg-surface-container-low p-sm rounded-md border border-outline-variant/50 flex items-start gap-2">
+<span class="material-symbols-outlined text-outline text-sm mt-1">attachment</span>
+<p class="font-body-md text-body-md text-on-surface"><span class="font-medium text-on-surface-variant">Reason:</span> Severe flu, medical certificate attached from University Clinic.</p>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-md md:mt-0 self-end md:self-auto">
+<button class="flex items-center justify-center w-12 h-12 rounded-full border border-error text-error hover:bg-error-container transition-colors duration-200 active:scale-95" title="Deny">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-[#10B981] text-white hover:bg-opacity-90 shadow-md transition-colors duration-200 active:scale-95" title="Approve">
+<span class="material-symbols-outlined text-2xl">check</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List Item: Leave of Absence -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-outline-variant hover:shadow-md transition-shadow duration-200 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-md ml-xs">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full uppercase tracking-wider">Leave of Absence</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Oct 20 - Oct 25 (6 days)</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface font-semibold">Priya Patel</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">ID: ST-2021-0932</p>
+<div class="bg-surface-container-low p-sm rounded-md border border-outline-variant/50">
+<p class="font-body-md text-body-md text-on-surface"><span class="font-medium text-on-surface-variant">Reason:</span> Attending sister's wedding out of state. Train tickets booked.</p>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-md md:mt-0 self-end md:self-auto">
+<button class="flex items-center justify-center w-12 h-12 rounded-full border border-error text-error hover:bg-error-container transition-colors duration-200 active:scale-95" title="Deny">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-[#10B981] text-white hover:bg-opacity-90 shadow-md transition-colors duration-200 active:scale-95" title="Approve">
+<span class="material-symbols-outlined text-2xl">check</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- SideNav (Desktop Only) - Generated from Shell rules -->
+<nav class="hidden md:flex flex-col fixed left-0 top-16 bottom-0 w-72 bg-surface dark:bg-surface-dim border-r border-outline-variant dark:border-outline z-40 py-lg px-md shadow-sm">
+<ul class="space-y-sm">
+<li class="">
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-title-md text-title-md" href="#">
+<span class="material-symbols-outlined">home</span>
+                    Home
+                </a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-title-md text-title-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">fact_check</span>
+                    Approvals
+                    <span class="ml-auto bg-surface-tint text-white text-xs font-bold px-2 py-1 rounded-full">3</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-title-md text-title-md" href="#">
+<span class="material-symbols-outlined">campaign</span>
+                    Broadcasts
+                </a>
+</li>
+<li class="pt-lg mt-lg border-t border-outline-variant">
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-title-md text-title-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+</nav>
+<!-- BottomNavBar from JSON (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface dark:bg-surface-dim border-t border-outline-variant dark:border-outline shadow-lg flex justify-around items-center h-20 w-full pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-5 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-full px-5 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#" style="color: rgb(189, 0, 0);">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: &quot;FILL&quot; 1; color: rgb(189, 0, 0);">fact_check</span>
+<span class="font-label-sm text-label-sm" style="font-variation-settings: &quot;FILL&quot; 1; color: rgb(189, 0, 0);">Approvals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-5 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">campaign</span>
+<span class="font-label-sm text-label-sm">Broadcasts</span>
+</a>
+
+</nav>
+<script>
+        // Simple interaction for segmented control
+        document.querySelectorAll('button[aria-selected]').forEach(button => {
+            button.addEventListener('click', function() {
+                const parent = this.parentElement;
+                parent.querySelectorAll('button').forEach(btn => {
+                    btn.setAttribute('aria-selected', 'false');
+                    btn.classList.remove('bg-surface', 'shadow-sm', 'text-primary');
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-variant');
+                });
+                
+                this.setAttribute('aria-selected', 'true');
+                this.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant');
+                this.classList.add('bg-surface', 'shadow-sm', 'text-primary');
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+</body></html>

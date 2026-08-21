@@ -2,6 +2,7 @@
 enum UserRole {
   student,
   personnel,
+  teacher, // Faculty / professors with read-only incident visibility
 }
 
 /// Represents the authenticated user profile.

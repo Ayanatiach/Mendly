@@ -1,0 +1,331 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Mendly - Maintenance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#ffb3af",
+                        "primary-container": "#d90429",
+                        "surface-container-highest": "#35352f",
+                        "on-secondary": "#551c32",
+                        "on-secondary-container": "#ef9eb7",
+                        "surface-container": "#1f201a",
+                        "black-cherry": "#2E0014",
+                        "surface-tint": "#ffb3af",
+                        "inverse-surface": "#e4e3d9",
+                        "on-primary-fixed": "#410005",
+                        "tertiary-fixed-dim": "#dbc1b8",
+                        "coffee-beans": "#1A0D08",
+                        "background": "#13140e",
+                        "alabaster-grey": "#F2F0E6",
+                        "on-tertiary-container": "#ffebe5",
+                        "on-secondary-fixed": "#3a061d",
+                        "on-surface-variant": "#e7bcba",
+                        "inverse-on-surface": "#30312a",
+                        "racing-red": "#D90429",
+                        "secondary-fixed-dim": "#ffb1c8",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#bf0022",
+                        "error": "#ffb4ab",
+                        "surface": "#13140e",
+                        "surface-dim": "#13140e",
+                        "tertiary-container": "#7d6860",
+                        "secondary-container": "#703248",
+                        "on-surface": "#e4e3d9",
+                        "outline": "#ae8885",
+                        "surface-container-lowest": "#0e0f09",
+                        "on-tertiary-fixed-variant": "#55433c",
+                        "surface-container-high": "#2a2a24",
+                        "on-tertiary": "#3d2d26",
+                        "primary-fixed": "#ffdad7",
+                        "on-primary-fixed-variant": "#930018",
+                        "tertiary-fixed": "#f9ddd3",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#ffd9e2",
+                        "on-primary": "#68000e",
+                        "on-primary-container": "#ffeae8",
+                        "secondary": "#ffb1c8",
+                        "on-tertiary-fixed": "#271813",
+                        "on-secondary-fixed-variant": "#703248",
+                        "outline-variant": "#5d3f3d",
+                        "tertiary": "#dbc1b8",
+                        "surface-bright": "#393a33",
+                        "on-background": "#e4e3d9",
+                        "primary": "#ffb3af",
+                        "on-error": "#690005",
+                        "surface-container-low": "#1b1c16",
+                        "surface-variant": "#35352f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "margin-desktop": "64px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "margin-mobile": "20px",
+                        "xl": "40px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "button": ["Inter"],
+                        "sans": ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "button": ["16px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: theme('colors.black-cherry');
+            color: theme('colors.on-surface');
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background-color: rgba(26, 13, 8, 0.7); /* coffee-beans/70 */
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(242, 240, 230, 0.15); /* alabaster-grey/15 */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(217, 4, 41, 0.5); /* racing-red glow */
+        }
+        
+        /* Circular Progress Animation */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(217, 4, 41, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(217, 4, 41, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(217, 4, 41, 0); }
+        }
+        
+        .pulse-effect {
+            animation: pulse-ring 2s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pb-24 md:pb-0 bg-surface-dim">
+<!-- TopAppBar (Web & Mobile) -->
+<header class="bg-coffee-beans/70 text-racing-red font-headline-md text-headline-md docked full-width top-0 backdrop-blur-xl border-b border-alabaster-grey/15 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full z-50 fixed">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform text-on-surface-variant flex items-center justify-center p-2 rounded-full hidden md:flex">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-racing-red tracking-tight">Mendly</h1>
+</div>
+<nav class="hidden md:flex gap-8 items-center h-full">
+<a class="font-button text-button text-on-surface-variant hover:opacity-80 transition-opacity flex items-center gap-2 h-full px-2 border-b-2 border-transparent" href="#">
+<span class="material-symbols-outlined">home</span>
+                Home
+            </a>
+<a class="font-button text-button text-racing-red hover:opacity-80 transition-opacity flex items-center gap-2 h-full px-2 border-b-2 border-racing-red" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">build</span>
+                Maintenance
+            </a>
+<a class="font-button text-button text-on-surface-variant hover:opacity-80 transition-opacity flex items-center gap-2 h-full px-2 border-b-2 border-transparent" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+                Mess
+            </a>
+<a class="font-button text-button text-on-surface-variant hover:opacity-80 transition-opacity flex items-center gap-2 h-full px-2 border-b-2 border-transparent" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+                Shuttle
+            </a>
+</nav>
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform text-on-surface-variant flex items-center justify-center p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full grid grid-cols-4 md:grid-cols-12 gap-gutter pb-xl">
+<!-- Header Section -->
+<div class="col-span-4 md:col-span-12 mb-lg">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-alabaster-grey mb-xs">Maintenance Hub</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Track ongoing repairs and log new requests.</p>
+</div>
+<!-- Left Column: Active Job Status -->
+<div class="col-span-4 md:col-span-7 flex flex-col gap-lg mb-lg md:mb-0">
+<!-- Active Job Card -->
+<div class="glass-card rounded-xl p-md md:p-lg relative overflow-hidden">
+<div class="absolute inset-0 opacity-20 pointer-events-none" data-alt="A dark, moody abstract background with deep black cherry tones and subtle geometric patterns" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqsa89WEZs_KJPG5gyv1lt_pcz20M_7ue8YQxUFfYYKhpc8Y4xQ9BjwuqNOSgDIj-Kw-WsOKd_mQI59jcRaXVDxfV3fV8wkJVDP000OQ0ebfbetqpZYiTPNVsW08rz5FLNVnbkYzynvaEHXpuxyEftTHKS7K3SBndTmukwVeiIrD5wx8lVstdu-Ky-dC-Rr8OWiF4pzK2FXb7LPh_XmkTxQb0dBN56GQXU2ufmG3vK_OK19DaHZT0f')"></div>
+<div class="flex justify-between items-start mb-lg relative z-10">
+<div>
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-racing-red/20 border border-racing-red/30 text-racing-red font-label-caps text-label-caps mb-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-racing-red mr-1.5 pulse-effect"></span>
+                            IN PROGRESS
+                        </span>
+<h2 class="font-headline-md text-headline-md text-alabaster-grey">AC Repair - Room 402</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Technician assigned: Ramesh K.</p>
+</div>
+</div>
+<!-- ETA Graphic Section -->
+<div class="flex items-center gap-lg relative z-10">
+<!-- Circular Progress -->
+<div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+<svg class="w-full h-full" viewBox="0 0 100 100">
+<!-- Background circle -->
+<circle class="text-surface-container-highest stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle>
+<!-- Progress circle -->
+<circle class="text-racing-red stroke-current progress-ring__circle" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-md text-headline-md font-bold text-alabaster-grey text-glow">10</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[9px]">MINS</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-alabaster-grey text-sm">home_repair_service</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-alabaster-grey">En route</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs">Expected arrival at 14:30</p>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-racing-red h-full rounded-full w-[75%] transition-all duration-1000 ease-in-out shadow-[0_0_10px_rgba(217,4,41,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Status Cards (2-up grid) -->
+<div class="grid grid-cols-2 gap-sm md:gap-md">
+<!-- Arrival Bonus Card -->
+<div class="glass-card rounded-xl p-md flex flex-col items-start justify-between min-h-[140px] hover:border-racing-red/50 transition-colors cursor-pointer active:scale-[0.98]">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center mb-sm text-racing-red">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">ELIGIBILITY</p>
+<h3 class="font-body-lg text-body-lg text-alabaster-grey font-semibold">₹20 Arrival Bonus</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs mt-1">If ETA &gt; 15 mins</p>
+</div>
+</div>
+<!-- Quality Period Tracker -->
+<div class="glass-card rounded-xl p-md flex flex-col items-start justify-between min-h-[140px] hover:border-racing-red/50 transition-colors cursor-pointer active:scale-[0.98]">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center mb-sm text-alabaster-grey">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<div class="w-full">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">WARRANTY</p>
+<h3 class="font-body-lg text-body-lg text-alabaster-grey font-semibold">20-Day Quality</h3>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-racing-red h-full rounded-full w-[10%]"></div>
+</div>
+<span class="font-label-caps text-label-caps text-racing-red text-[10px]">18 LEFT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Request Form Container -->
+<div class="col-span-4 md:col-span-5">
+<div class="glass-card rounded-xl p-md md:p-lg sticky top-24">
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-racing-red">add_circle</span>
+<h2 class="font-headline-md text-headline-md text-alabaster-grey">New Request</h2>
+</div>
+<form class="space-y-md">
+<!-- Issue Type -->
+<div>
+<label class="font-body-sm text-body-sm font-semibold text-alabaster-grey block mb-xs">Issue Type</label>
+<div class="grid grid-cols-2 gap-sm">
+<label class="relative flex items-center justify-center p-3 rounded-lg border border-alabaster-grey/20 bg-black-cherry/50 cursor-pointer hover:bg-white/5 transition-colors">
+<input checked="" class="sr-only peer" name="issue_type" type="radio" value="cleaning">
+<span class="material-symbols-outlined mr-2 peer-checked:text-racing-red text-on-surface-variant">cleaning_services</span>
+<span class="font-body-sm text-body-sm peer-checked:text-racing-red peer-checked:font-semibold text-on-surface-variant">Cleaning</span>
+<div class="absolute inset-0 border-2 border-transparent peer-checked:border-racing-red rounded-lg transition-colors pointer-events-none"></div>
+</label>
+<label class="relative flex items-center justify-center p-3 rounded-lg border border-alabaster-grey/20 bg-black-cherry/50 cursor-pointer hover:bg-white/5 transition-colors">
+<input class="sr-only peer" name="issue_type" type="radio" value="repair">
+<span class="material-symbols-outlined mr-2 peer-checked:text-racing-red text-on-surface-variant">build</span>
+<span class="font-body-sm text-body-sm peer-checked:text-racing-red peer-checked:font-semibold text-on-surface-variant">Repair</span>
+<div class="absolute inset-0 border-2 border-transparent peer-checked:border-racing-red rounded-lg transition-colors pointer-events-none"></div>
+</label>
+</div>
+</div>
+<!-- Details Input -->
+<div>
+<label class="font-body-sm text-body-sm font-semibold text-alabaster-grey block mb-xs">Description</label>
+<textarea class="w-full bg-black-cherry/50 border border-alabaster-grey/20 rounded-lg p-3 font-body-sm text-body-sm text-alabaster-grey placeholder:text-on-surface-variant/50 focus:border-racing-red focus:ring-1 focus:ring-racing-red transition-all resize-none h-24" placeholder="Describe the issue... (e.g. Fan making noise)"></textarea>
+</div>
+<!-- Photo Upload (Visual Placeholder) -->
+<div>
+<button class="w-full border-2 border-dashed border-alabaster-grey/20 rounded-lg p-4 flex flex-col items-center justify-center text-on-surface-variant bg-black-cherry/30 hover:bg-white/5 transition-colors hover:border-racing-red/50" type="button">
+<span class="material-symbols-outlined mb-1">add_a_photo</span>
+<span class="font-body-sm text-body-sm">Attach Photo (Optional)</span>
+</button>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-gradient-to-b from-racing-red to-[#b3001e] text-alabaster-grey font-button text-button h-14 rounded-lg flex items-center justify-center hover:shadow-[0_6px_20px_rgba(217,4,41,0.6)] active:scale-[0.98] transition-all mt-sm shadow-[0_4px_14px_rgba(217,4,41,0.4)]" type="submit">
+                        Submit Request
+                    </button>
+</form>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-2xl border-t border-alabaster-grey/10 px-6 py-3 flex justify-around items-center shadow-[0_-4px_24px_0_rgba(0,0,0,0.4)] h-16">
+<a class="flex flex-col items-center gap-1 text-alabaster-grey/50 hover:text-alabaster-grey transition-all active:scale-90 group" href="#">
+<span class="material-symbols-outlined text-[24px] group-active:text-racing-red">home</span>
+<span class="font-label-caps text-[10px] uppercase tracking-widest group-active:text-racing-red">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-racing-red transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined text-[24px] text-glow" style="font-variation-settings: 'FILL' 1;">build</span>
+<span class="font-label-caps text-[10px] uppercase tracking-widest">Maintenance</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-alabaster-grey/50 hover:text-alabaster-grey transition-all active:scale-90 group" href="#">
+<span class="material-symbols-outlined text-[24px] group-active:text-racing-red">restaurant</span>
+<span class="font-label-caps text-[10px] uppercase tracking-widest group-active:text-racing-red">Mess</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-alabaster-grey/50 hover:text-alabaster-grey transition-all active:scale-90 group" href="#">
+<span class="material-symbols-outlined text-[24px] group-active:text-racing-red">local_shipping</span>
+<span class="font-label-caps text-[10px] uppercase tracking-widest group-active:text-racing-red">Shuttle</span>
+</a>
+</nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const circle = document.querySelector('.progress-ring__circle');
+        if (circle) {
+            setTimeout(() => {
+                circle.style.strokeDashoffset = "80"; 
+            }, 500);
+        }
+    });
+</script>
+</body></html>

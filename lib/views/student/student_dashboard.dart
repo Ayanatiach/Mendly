@@ -4,7 +4,7 @@ import '../../providers/app_state.dart';
 import '../../models/ticket_model.dart';
 import 'create_ticket_screen.dart';
 import 'ticket_detail_screen.dart';
-import '../auth_screen.dart';
+import '../../stitch_ui/login_dark_mode/login_screen.dart';
 
 /// Student Workspace listing all submitted repair reports with live status badges
 class StudentDashboard extends StatelessWidget {
@@ -12,69 +12,117 @@ class StudentDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
+    final appState = Provider.of<AppState>(context, listen: true);
     final tickets = appState.studentTickets;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final bg = isDark ? const Color(0xFF2E0014) : const Color(0xFFFBF9F2);
+    final cardBg = isDark ? const Color(0xFF1A0D08) : Colors.white;
+    final cardBorder = isDark
+        ? const Color(0xFFF2F0E6).withValues(alpha: 0.15)
+        : const Color(0xFF1A0D08).withValues(alpha: 0.08);
+    final textPrimary = isDark ? const Color(0xFFF2F0E6) : const Color(0xFF1A0D08);
+    final textMuted = isDark ? const Color(0xFFE7BCBA) : const Color(0xFF703248);
+    final appBarBg = isDark ? const Color(0xFF1A0D08) : const Color(0xFFF2F0E6);
+    const racingRed = Color(0xFFD90429);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: bg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: appBarBg,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: textPrimary, size: 20),
+          onPressed: () => Navigator.maybePop(context),
+        ),
         title: Row(
           children: [
             const Icon(Icons.home_repair_service_rounded,
-                color: Color(0xFF818CF8)),
+                color: racingRed),
             const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Mendly Student Portal',
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mendly Student Portal',
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white)),
-                Text(appState.currentUser?.email ?? '',
-                    style: const TextStyle(
-                        fontSize: 11, color: Color(0xFF94A3B8))),
-              ],
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: textPrimary,
+                    ),
+                  ),
+                  Text(
+                    appState.currentUser?.email ?? '',
+                    style: TextStyle(fontSize: 11, color: textMuted),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
         actions: [
           IconButton(
+            tooltip: 'Toggle Theme',
+            icon: Icon(
+              appState.currentTheme == ThemeMode.dark
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
+              color: textMuted,
+            ),
+            onPressed: () => appState.toggleTheme(),
+          ),
+          IconButton(
             tooltip: 'Logout',
-            icon: const Icon(Icons.logout, color: Color(0xFF94A3B8)),
+            icon: Icon(Icons.logout, color: textMuted),
             onPressed: () {
               appState.logout();
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const AuthScreen()));
+                  MaterialPageRoute(builder: (_) => const LoginScreen()));
             },
           )
         ],
       ),
       body: tickets.isEmpty
           ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.assignment_turned_in_outlined,
-                      size: 64, color: Colors.white.withValues(alpha: 0.2)),
-                  const SizedBox(height: 16),
-                  const Text('No issues reported yet',
-                      style: TextStyle(color: Color(0xFF94A3B8), fontSize: 16)),
-                  const SizedBox(height: 8),
-                  const Text(
-                      'Spot something broken? Tap the button below to report.',
-                      style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.assignment_turned_in_outlined,
+                        size: 64, color: racingRed.withValues(alpha: 0.3)),
+                    const SizedBox(height: 16),
+                    Text('No issues reported yet',
+                        style: TextStyle(
+                            color: textPrimary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Text(
+                        'Spot something broken? Tap the button below to report.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: textMuted, fontSize: 13)),
+                  ],
+                ),
               ),
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
               itemCount: tickets.length,
               itemBuilder: (context, index) {
                 final ticket = tickets[index];
-                return _buildTicketCard(context, ticket);
+                return _buildTicketCard(
+                  context,
+                  ticket,
+                  cardBg,
+                  cardBorder,
+                  textPrimary,
+                  textMuted,
+                  isDark,
+                );
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
@@ -82,7 +130,7 @@ class StudentDashboard extends StatelessWidget {
           Navigator.push(context,
               MaterialPageRoute(builder: (_) => const CreateTicketScreen()));
         },
-        backgroundColor: const Color(0xFF6366F1),
+        backgroundColor: racingRed,
         icon: const Icon(Icons.camera_alt_outlined, color: Colors.white),
         label: const Text('Report Damage',
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
@@ -90,7 +138,15 @@ class StudentDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildTicketCard(BuildContext context, TicketModel ticket) {
+  Widget _buildTicketCard(
+    BuildContext context,
+    TicketModel ticket,
+    Color cardBg,
+    Color cardBorder,
+    Color textPrimary,
+    Color textMuted,
+    bool isDark,
+  ) {
     Color statusColor;
     String statusText;
 
@@ -113,12 +169,19 @@ class StudentDashboard extends StatelessWidget {
         break;
     }
 
-    return Card(
-      color: const Color(0xFF1E293B),
+    return Container(
       margin: const EdgeInsets.only(bottom: 14),
-      shape: RoundedRectangleBorder(
+      decoration: BoxDecoration(
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFF334155)),
+        border: Border.all(color: cardBorder, width: 0.8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -138,7 +201,7 @@ class StudentDashboard extends StatelessWidget {
                 children: [
                   Text(ticket.id,
                       style: const TextStyle(
-                          color: Color(0xFF818CF8),
+                          color: Color(0xFFD90429),
                           fontWeight: FontWeight.bold,
                           fontSize: 12)),
                   Container(
@@ -160,8 +223,8 @@ class StudentDashboard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(ticket.title,
-                  style: const TextStyle(
-                      color: Colors.white,
+                  style: TextStyle(
+                      color: textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 6),
@@ -169,20 +232,20 @@ class StudentDashboard extends StatelessWidget {
                 ticket.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                style: TextStyle(color: textMuted, fontSize: 13),
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  const Icon(Icons.location_on_outlined,
-                      size: 14, color: Color(0xFF64748B)),
+                  Icon(Icons.location_on_outlined,
+                      size: 14, color: textMuted),
                   const SizedBox(width: 4),
                   Text('${ticket.building} • ${ticket.room}',
-                      style: const TextStyle(
-                          color: Color(0xFF64748B), fontSize: 12)),
+                      style: TextStyle(
+                          color: textMuted.withValues(alpha: 0.8), fontSize: 12)),
                   const Spacer(),
-                  const Icon(Icons.chevron_right_rounded,
-                      color: Color(0xFF94A3B8)),
+                  Icon(Icons.chevron_right_rounded,
+                      color: textMuted.withValues(alpha: 0.6)),
                 ],
               )
             ],

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/ticket_model.dart';
 
@@ -6,9 +6,20 @@ import '../models/ticket_model.dart';
 class AppState extends ChangeNotifier {
   UserModel? _currentUser;
   final List<TicketModel> _tickets = [];
+  ThemeMode _currentTheme = ThemeMode.dark;
 
   AppState() {
     _populateInitialMockData();
+  }
+
+  // --- Theme Management ---
+  ThemeMode get currentTheme => _currentTheme;
+  bool get isDarkMode => _currentTheme == ThemeMode.dark;
+
+  void toggleTheme() {
+    _currentTheme =
+        _currentTheme == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    notifyListeners();
   }
 
   // --- Getters ---
@@ -36,16 +47,27 @@ class AppState extends ChangeNotifier {
     return clean.endsWith('@bmu.edu.in');
   }
 
-  /// Logs in the user with validation
+  /// Logs in the user with role-based credential validation.
+  ///
+  /// - **Student**: must have a valid `@bmu.edu.in` email.
+  /// - **Personnel**: must be exactly `personnel@enviro.in`.
+  ///
+  /// Returns `true` on success, `false` on any validation failure.
   bool login(String email, UserRole role) {
-    if (!validateUniversityEmail(email)) {
-      return false; // Domain verification failed
+    final clean = email.trim().toLowerCase();
+
+    if (role == UserRole.personnel) {
+      // Personnel are exclusively authenticated via a single locked credential
+      if (clean != 'personnel@enviro.in') return false;
+    } else {
+      // Students (and any other role) must belong to the BMU domain
+      if (!validateUniversityEmail(clean)) return false;
     }
 
     _currentUser = UserModel(
       id: 'USER_${DateTime.now().millisecondsSinceEpoch}',
-      email: email.trim().toLowerCase(),
-      name: email.split('@').first.replaceAll('.', ' ').toUpperCase(),
+      email: clean,
+      name: clean.split('@').first.replaceAll('.', ' ').toUpperCase(),
       role: role,
     );
     notifyListeners();
@@ -58,8 +80,58 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Authenticates a teacher / professor using their BMU institutional email.
+  /// Teachers are routed to a read-only incident overview on the dashboard.
+  ///
+  /// Returns `true` on success, `false` if the email domain is invalid.
+  bool loginAsTeacher(String email) {
+    if (!validateUniversityEmail(email)) return false;
+
+    _currentUser = UserModel(
+      id: 'TCHR_${DateTime.now().millisecondsSinceEpoch}',
+      email: email.trim().toLowerCase(),
+      name: email.split('@').first.replaceAll('.', ' ').toUpperCase(),
+      role: UserRole.teacher,
+    );
+    notifyListeners();
+    return true;
+  }
+
   // --- Student Actions ---
-  /// Creates a new damage report ticket
+
+  /// Adds a new damage report ticket submitted via the Report Damage form.
+  /// Generates a mock ID in the format 'TICK-100X', sets status to
+  /// [TicketStatus.reported], inserts at the top of the list, and notifies.
+  void addTicket({
+    required String title,
+    required String description,
+    required String building,
+    required String room,
+    TicketSeverity severity = TicketSeverity.medium,
+    String? imageUrl,
+  }) {
+    if (_currentUser == null) return;
+
+    final mockId = 'TICK-${1001 + _tickets.length}';
+    final newTicket = TicketModel(
+      id: mockId,
+      title: title,
+      description: description,
+      building: building,
+      room: room,
+      severity: severity,
+      status: TicketStatus.reported,
+      createdAt: DateTime.now(),
+      studentEmail: _currentUser!.email,
+      imageUrl: imageUrl ??
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80',
+    );
+
+    _tickets.insert(0, newTicket);
+    notifyListeners();
+  }
+
+  /// Creates a new damage report ticket (legacy method — prefer addTicket)
   void createTicket({
     required String title,
     required String description,

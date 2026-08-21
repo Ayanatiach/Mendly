@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/user_model.dart';
 import '../providers/app_state.dart';
-import 'student/main_tab_screen.dart';
+import '../stitch_ui/home_dashboard_dark_mode_unified/home_dashboard_screen.dart';
 import 'personnel/personnel_dashboard.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -45,7 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     style: TextStyle(color: Color(0xFF94A3B8), fontSize: 14)),
                 const SizedBox(height: 24),
 
-                // Valid BMU Account Mock (Using safe local icons instead of Network Images)
+                // --- Student accounts ---
                 _buildGoogleAccountTile(
                   name: 'Chaitanya',
                   email: 'chaitanya.26cse@bmu.edu.in',
@@ -54,12 +54,22 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 const Divider(color: Color(0xFF334155), height: 1),
 
-                // Invalid Personal Account Mock (To prove the filter works to judges)
+                // --- Invalid personal account (shows domain filter to judges) ---
                 _buildGoogleAccountTile(
                   name: 'Chaitanya (Personal)',
                   email: 'chaitanya.dev@gmail.com',
-                  avatarColor: const Color(0xFF6366F1),
+                  avatarColor: const Color(0xFF64748B),
                   onTap: () => _processLogin('chaitanya.dev@gmail.com'),
+                ),
+                const Divider(color: Color(0xFF334155), height: 1),
+
+                // --- Personnel account (locked to personnel@enviro.in) ---
+                _buildGoogleAccountTile(
+                  name: 'Enviro Personnel',
+                  email: 'personnel@enviro.in',
+                  avatarColor: const Color(0xFF6366F1),
+                  badge: '🔧 Personnel Only',
+                  onTap: () => _processLogin('personnel@enviro.in'),
                 ),
               ],
             ),
@@ -69,44 +79,36 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  /// Processes the selected email through your app's validation logic
+  /// Processes the selected email through the app's validation logic.
+  /// Personnel are exclusively authenticated via personnel@enviro.in.
   void _processLogin(String email) async {
-    // 1. Grab the state BEFORE the async delay to prevent context loss
     final appState = Provider.of<AppState>(context, listen: false);
 
-    Navigator.pop(context); // Close the bottom sheet
-    setState(() => _isLoading = true); // Start spinner
+    Navigator.pop(context);
+    setState(() => _isLoading = true);
 
     try {
-      // Simulate network delay for realism
       await Future.delayed(const Duration(milliseconds: 800));
-
       if (!mounted) return;
 
-      // 2. Perform the login logic
       final success = appState.login(email, _selectedRole);
-
       if (success) {
-        // 3. Smooth transition: Do NOT turn off the spinner if we are navigating away.
-        // Let it keep spinning as it smoothly animates to the next screen.
-        Widget nextScreen = _selectedRole == UserRole.student
-            ? const MainTabScreen()
+        final nextScreen = _selectedRole == UserRole.student
+            ? const HomeDashboardScreen()
             : const PersonnelDashboard();
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => nextScreen),
         );
       } else {
-        // If domain fails, stop the spinner and show the error
         setState(() {
           _isLoading = false;
-          _errorMessage =
-              'Access Restricted: Mendly requires an active @bmu.edu.in university account.';
+          _errorMessage = _selectedRole == UserRole.personnel
+              ? 'Personnel access is restricted. Use the personnel@enviro.in account.'
+              : 'Access Restricted: Only @bmu.edu.in accounts are permitted.';
         });
       }
     } catch (error) {
-      // Failsafe: If anything crashes in the background, stop the spinner!
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -116,11 +118,13 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  Widget _buildGoogleAccountTile(
-      {required String name,
-      required String email,
-      required Color avatarColor,
-      required VoidCallback onTap}) {
+  Widget _buildGoogleAccountTile({
+    required String name,
+    required String email,
+    required Color avatarColor,
+    required VoidCallback onTap,
+    String? badge,
+  }) {
     return ListTile(
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -128,9 +132,30 @@ class _AuthScreenState extends State<AuthScreen> {
         backgroundColor: avatarColor,
         child: const Icon(Icons.person, color: Colors.white),
       ),
-      title: Text(name,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold)),
+      title: Row(
+        children: [
+          Text(name,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
+          if (badge != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                    color: const Color(0xFF6366F1).withValues(alpha: 0.4)),
+              ),
+              child: Text(badge,
+                  style: const TextStyle(
+                      color: Color(0xFF818CF8),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ],
+      ),
       subtitle: Text(email, style: const TextStyle(color: Color(0xFF94A3B8))),
     );
   }
@@ -184,7 +209,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13)),
                 const SizedBox(height: 28),
 
-                // Role Toggle
+                // Role Toggle — Student / Personnel only
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(

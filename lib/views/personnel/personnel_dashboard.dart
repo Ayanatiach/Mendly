@@ -3,17 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
 import '../../models/ticket_model.dart';
+import '../../stitch_ui/login_dark_mode/login_screen.dart';
 import 'resolve_ticket_screen.dart';
 import 'personnel_wallet_screen.dart';
-import '../auth_screen.dart';
 
 /// Maintenance Personnel Hub showing live tickets with active 10-minute timers.
-///
-/// Uses a StatefulWidget with a Timer.periodic to drive the live SLA countdown.
-/// This is critical on Flutter Web: reading DateTime.now() directly inside a
-/// build() method that is also subscribed to a Provider will cause an infinite
-/// rebuild loop (stack overflow). The timer gates clock updates behind setState,
-/// completely decoupling the live clock tick from the Provider rebuild cycle.
 class PersonnelDashboard extends StatefulWidget {
   const PersonnelDashboard({super.key});
 
@@ -22,15 +16,12 @@ class PersonnelDashboard extends StatefulWidget {
 }
 
 class _PersonnelDashboardState extends State<PersonnelDashboard> {
-  // Ticks every second to refresh the live SLA countdown display.
-  // This is the ONLY thing that should be driving the clock — NOT build().
   late final Timer _clockTimer;
 
   @override
   void initState() {
     super.initState();
     _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      // Only rebuild if the widget is still mounted to avoid leaks.
       if (mounted) setState(() {});
     });
   }
@@ -43,18 +34,32 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    // Use Consumer so that Provider rebuilds are handled correctly without
-    // causing a new Provider.of subscription on every single frame tick.
     return Consumer<AppState>(builder: (context, appState, _) {
       final tickets = appState.openPersonnelTickets;
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+
+      final bg = isDark ? const Color(0xFF2E0014) : const Color(0xFFFBF9F2);
+      final cardBg = isDark ? const Color(0xFF1A0D08) : Colors.white;
+      final cardBorder = isDark
+          ? const Color(0xFFF2F0E6).withValues(alpha: 0.15)
+          : const Color(0xFF1A0D08).withValues(alpha: 0.08);
+      final textPrimary = isDark ? const Color(0xFFF2F0E6) : const Color(0xFF1A0D08);
+      final textMuted = isDark ? const Color(0xFFE7BCBA) : const Color(0xFF703248);
 
       return Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: bg,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF1E293B),
-          title: const Text('Urgent Dispatch Queue', style: TextStyle(color: Colors.white, fontSize: 16)),
+          backgroundColor: cardBg.withValues(alpha: 0.8),
+          elevation: 0,
+          title: Text(
+            'Urgent Dispatch Queue',
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           actions: [
-            // Wallet and Bonus Navigation Button
             IconButton(
               tooltip: 'Earnings & Bonus Wallet',
               icon: const Icon(Icons.account_balance_wallet_outlined, color: Color(0xFF10B981)),
@@ -63,49 +68,84 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
               },
             ),
             IconButton(
+              tooltip: 'Toggle Theme',
+              icon: Icon(
+                appState.currentTheme == ThemeMode.dark
+                    ? Icons.light_mode_outlined
+                    : Icons.dark_mode_outlined,
+                color: textMuted,
+              ),
+              onPressed: () => appState.toggleTheme(),
+            ),
+            IconButton(
               tooltip: 'Logout',
-              icon: const Icon(Icons.logout, color: Color(0xFF94A3B8)),
+              icon: Icon(Icons.logout, color: textMuted),
               onPressed: () {
                 appState.logout();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
               },
             )
           ],
         ),
         body: tickets.isEmpty
-            ? const Center(child: Text('No pending tickets in queue! Great job.', style: TextStyle(color: Color(0xFF94A3B8))))
+            ? Center(
+                child: Text(
+                  'No pending tickets in queue! Great job.',
+                  style: TextStyle(color: textMuted),
+                ),
+              )
             : ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
                 itemCount: tickets.length,
                 itemBuilder: (context, index) {
                   final ticket = tickets[index];
-                  return _buildDispatchCard(context, appState, ticket);
+                  return _buildDispatchCard(context, appState, ticket, cardBg, cardBorder, textPrimary, textMuted, isDark);
                 },
               ),
       );
     });
   }
 
-  Widget _buildDispatchCard(BuildContext context, AppState appState, TicketModel ticket) {
+  Widget _buildDispatchCard(
+    BuildContext context,
+    AppState appState,
+    TicketModel ticket,
+    Color cardBg,
+    Color cardBorder,
+    Color textPrimary,
+    Color textMuted,
+    bool isDark,
+  ) {
     final remainingSecs = ticket.remainingSecondsForSla;
     final minutes = remainingSecs ~/ 60;
     final seconds = remainingSecs % 60;
 
     final isTimerActive = ticket.arrivedAt == null && remainingSecs > 0;
     final isSlaExpired = ticket.arrivedAt == null && remainingSecs <= 0;
+    const racingRed = Color(0xFFD90429);
 
-    return Card(
-      color: const Color(0xFF1E293B),
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: isTimerActive ? const Color(0xFFF59E0B) : const Color(0xFF334155),
-          width: isTimerActive ? 1.5 : 1.0,
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isTimerActive ? const Color(0xFFF59E0B) : cardBorder,
+          width: isTimerActive ? 1.5 : 0.8,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -116,10 +156,10 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                    color: racingRed.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(ticket.id, style: const TextStyle(color: Color(0xFF818CF8), fontWeight: FontWeight.bold, fontSize: 12)),
+                  child: Text(ticket.id, style: const TextStyle(color: racingRed, fontWeight: FontWeight.bold, fontSize: 12)),
                 ),
                 if (ticket.arrivedAt == null)
                   Container(
@@ -153,7 +193,7 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
                     child: Text(
                       ticket.isBonusEligible ? '₹20 Bonus Qualified' : 'Arrived (>10 min)',
                       style: TextStyle(
-                        color: ticket.isBonusEligible ? const Color(0xFF10B981) : const Color(0xFF94A3B8),
+                        color: ticket.isBonusEligible ? const Color(0xFF10B981) : textMuted,
                         fontWeight: FontWeight.bold,
                         fontSize: 11,
                       ),
@@ -163,9 +203,9 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
             ),
             const SizedBox(height: 12),
 
-            Text(ticket.title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(ticket.title, style: TextStyle(color: textPrimary, fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
-            Text('${ticket.building} • ${ticket.room}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13)),
+            Text('${ticket.building} • ${ticket.room}', style: TextStyle(color: textMuted, fontSize: 13)),
             const SizedBox(height: 16),
 
             // Action Buttons
@@ -176,7 +216,11 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.gps_fixed, size: 16, color: Colors.white),
                       label: const Text('Mark Arrived (GPS)', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10B981)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF10B981),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
                       onPressed: () => appState.markArrival(ticket.id),
                     ),
                   ),
@@ -185,7 +229,11 @@ class _PersonnelDashboardState extends State<PersonnelDashboard> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.check_circle_outline, size: 16, color: Colors.white),
                       label: const Text('Complete & Resolve', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6366F1)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: racingRed,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) => ResolveTicketScreen(ticketId: ticket.id)));
                       },
