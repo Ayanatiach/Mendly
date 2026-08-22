@@ -4,6 +4,7 @@ import '../../stitch_ui/home_dashboard_dark_mode_unified/home_dashboard_screen.d
 import 'student_dashboard.dart'; // Repairs / Maintenance screen
 import 'mess_screen.dart'; // Mess entry & menu screen
 import 'shuttle_screen.dart'; // Shuttle transit screen
+import 'tuck_shop_screen.dart'; // Campus Tuck Shop screen
 
 /// The root tab container for the Student view with a theme-aware glassmorphic dock.
 class MainTabScreen extends StatefulWidget {
@@ -16,12 +17,13 @@ class MainTabScreen extends StatefulWidget {
 class _MainTabScreenState extends State<MainTabScreen> {
   int _currentIndex = 0;
 
-  // The four core feature screens for the campus super-app
+  // The five core feature screens for the campus super-app
   final List<Widget> _screens = const [
     HomeDashboardScreen(),
     StudentDashboard(),
     MessScreen(),
     ShuttleScreen(),
+    TuckShopScreen(),
   ];
 
   @override
@@ -67,7 +69,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: dockBg.withValues(alpha: 0.85),
               borderRadius: BorderRadius.circular(32),
@@ -84,12 +86,14 @@ class _MainTabScreenState extends State<MainTabScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildDockItem(0, Icons.home_outlined, Icons.home_rounded, 'Home', isDark),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 _buildDockItem(1, Icons.build_circle_outlined, Icons.build_circle_rounded, 'Repairs', isDark),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 _buildDockItem(2, Icons.restaurant_outlined, Icons.restaurant_rounded, 'Mess', isDark),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 _buildDockItem(3, Icons.directions_bus_outlined, Icons.directions_bus_rounded, 'Shuttle', isDark),
+                const SizedBox(width: 6),
+                _buildDockItem(4, Icons.storefront_outlined, Icons.storefront_rounded, 'Tuck Shop', isDark),
               ],
             ),
           ),
@@ -111,7 +115,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutQuint,
         padding: EdgeInsets.symmetric(
-            horizontal: isSelected ? 14.0 : 10.0, vertical: 8.0),
+            horizontal: isSelected ? 12.0 : 10.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: isSelected
               ? racingRed.withValues(alpha: 0.15)

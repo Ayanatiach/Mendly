@@ -13,6 +13,13 @@ class ShuttleScreen extends StatefulWidget {
 class _ShuttleScreenState extends State<ShuttleScreen> {
   String _activeFilter = 'All';
 
+  // ── Mock State Variable ───────────────────────────────────────────────────
+  /// Number of seats available on the featured IFFCO Chowk route (0 = full)
+  int seatsAvailable = 0;
+
+  /// Whether the Uber offer banner has been tapped
+  bool _uberClaimed = false;
+
   final List<Map<String, dynamic>> _departures = [
     {
       'time': '11:15',
@@ -371,6 +378,16 @@ class _ShuttleScreenState extends State<ShuttleScreen> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 24),
+
+                // ── Featured Route: IFFCO Chowk (Uber Overflow Fallback) ──
+                _buildIffcoChowkRouteCard(
+                  isDark: isDark,
+                  cardBg: cardBg,
+                  cardBorder: cardBorder,
+                  textPrimary: textPrimary,
+                  textMuted: textMuted,
+                ),
                 const SizedBox(height: 32),
 
                 // ── Upcoming Departures Section ───────────────────────────
@@ -555,6 +572,322 @@ class _ShuttleScreenState extends State<ShuttleScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // ── IFFCO Chowk Featured Route Card with Uber Overflow Fallback ────────────
+  Widget _buildIffcoChowkRouteCard({
+    required bool isDark,
+    required Color cardBg,
+    required Color cardBorder,
+    required Color textPrimary,
+    required Color textMuted,
+  }) {
+    const racingRed = Color(0xFFD90429);
+    final isFull = seatsAvailable == 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.route_rounded, color: racingRed, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              'Featured Route',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: textPrimary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Container(
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isFull ? racingRed.withValues(alpha: 0.4) : cardBorder,
+              width: isFull ? 1.2 : 0.8,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                blurRadius: 18,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Route header
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF2E0014).withValues(alpha: 0.6)
+                            : const Color(0xFFF2F0E6),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.directions_bus_rounded,
+                        color: racingRed,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'IFFCO Chowk Express',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Departs 6:30 PM · Gate 4 · ~22 min',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Full / Seats Chip
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: isFull
+                            ? racingRed.withValues(alpha: 0.15)
+                            : const Color(0xFF10B981).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isFull
+                              ? racingRed.withValues(alpha: 0.4)
+                              : const Color(0xFF10B981).withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isFull
+                                ? Icons.block_rounded
+                                : Icons.airline_seat_recline_normal_rounded,
+                            size: 12,
+                            color: isFull ? racingRed : const Color(0xFF10B981),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            isFull
+                                ? 'FULL'
+                                : '$seatsAvailable seats left',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: isFull ? racingRed : const Color(0xFF10B981),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Conditional action UI
+                if (!isFull) ...[
+                  // ── Normal: Book Seat Button ──────────────────────────
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: racingRed,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 4,
+                        shadowColor: racingRed.withValues(alpha: 0.4),
+                      ),
+                      icon: const Icon(Icons.confirmation_number_outlined,
+                          size: 18),
+                      label: Text(
+                        'Book Seat — $seatsAvailable Remaining',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () =>
+                          _bookSeat('6:30 PM', 'IFFCO Chowk Express'),
+                    ),
+                  ),
+                ] else ...[
+                  // ── Full Capacity: Uber Overflow Fallback ─────────────
+                  // Full Capacity banner
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 9),
+                    decoration: BoxDecoration(
+                      color: racingRed.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: racingRed.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: racingRed,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'This shuttle is at full capacity. Get there on time with Uber.',
+                            style: TextStyle(
+                              color: textMuted,
+                              fontSize: 12,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Uber Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _uberClaimed
+                          ? Container(
+                              key: const ValueKey('uber_claimed'),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF10B981)
+                                    .withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                    color: const Color(0xFF10B981)
+                                        .withValues(alpha: 0.4)),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.check_circle_rounded,
+                                      color: Color(0xFF10B981), size: 18),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Uber promo code sent to your app!',
+                                    style: TextStyle(
+                                      color: Color(0xFF10B981),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ElevatedButton(
+                              key: const ValueKey('uber_btn'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF0A0A0A),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(
+                                      color:
+                                          racingRed.withValues(alpha: 0.6),
+                                      width: 1.2),
+                                ),
+                                elevation: 4,
+                                shadowColor:
+                                    Colors.black.withValues(alpha: 0.5),
+                              ),
+                              onPressed: () =>
+                                  setState(() => _uberClaimed = true),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Uber "U" pill
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.circular(6),
+                                    ),
+                                    child: const Text(
+                                      'Uber',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: -0.3,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  const Text(
+                                    'Book Uber  —  10% Off',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: racingRed,
+                                      borderRadius:
+                                          BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'PROMO',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
