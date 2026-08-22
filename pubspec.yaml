@@ -14,12 +14,45 @@ dependencies:
   provider: ^6.1.2
   # Date formatting for countdown timers and timestamp displays
   intl: ^0.19.0
+  firebase_core: ^4.13.0
+  firebase_auth: ^6.5.7
+  cloud_firestore: ^6.8.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.14.4
+
+# ── App Icon Configuration ──────────────────────────────────────────────────
+flutter_launcher_icons:
+  # Source image (1024×1024 PNG)
+  image_path: "lib/Logo/logo/screen.png"
+  # Android adaptive icon — solid dark background matching the Heritage theme
+  android: true
+  adaptive_icon_background: "#1A0D08"
+  adaptive_icon_foreground: "lib/Logo/logo/screen.png"
+  # iOS / macOS
+  ios: true
+  macos:
+    generate: true
+    image_path: "lib/Logo/logo/screen.png"
+  # Web
+  web:
+    generate: true
+    image_path: "lib/Logo/logo/screen.png"
+    background_color: "#1A0D08"
+    theme_color: "#D90429"
+  # Windows
+  windows:
+    generate: true
+    image_path: "lib/Logo/logo/screen.png"
+    icon_size: 256
 
 flutter:
   # Enables Material 3 design system components
   uses-material-design: true
+  # Register logo assets for in-app usage (e.g. splash, about screen)
+  assets:
+    - lib/Logo/logo/screen.png
+    - lib/Logo/app_text/screen.png
